@@ -35,7 +35,8 @@
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import {getDatabase,ref,push,set,onValue} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+import {getDatabase,ref,set,onValue} from "...firebase-database.js";
+import {getAuth,signInAnonymously} from "...firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-SDx67qExccNG9dejrtT62J8XJFaMEfo",
@@ -49,7 +50,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const auth = getAuth(app);
 const root = document.querySelector("#app");
+
+await signInAnonymously(auth);
 
 const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({
   "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
@@ -122,7 +126,7 @@ function eventPage(eventId){
         ${yes.length ? yes.map(([name,person])=>`
           <div class="person">
             <div>
-              <strong>${esc(decodeURIComponent(name))}</strong>
+              <strong>${esc(person.name)}</strong>
               ${person.note ? `<div class="muted">${esc(person.note)}</div>` : ""}
             </div>
             <b>✓</b>
@@ -135,7 +139,7 @@ function eventPage(eventId){
         ${no.length ? no.map(([name,person])=>`
           <div class="person">
             <div>
-              <strong>${esc(decodeURIComponent(name))}</strong>
+              <strong>${esc(person.name)}</strong>
               ${person.note ? `<div class="muted">${esc(person.note)}</div>` : ""}
             </div>
             <b>×</b>
@@ -168,7 +172,8 @@ function eventPage(eventId){
 
       if(!name || !choice) return alert("Add your name and choose YES or NO.");
 
-      await set(ref(db,`events/${eventId}/responses/${encodeURIComponent(name)}`),{
+      await set(ref(db,`events/${eventId}/responses/${auth.currentUser.uid}`),{
+        name:name,
         status:choice,
         note:note
       });
