@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Are You Coming?</title>
+<title>വരുന്നുണ്ടോ???</title>
 <style>
   *{box-sizing:border-box}
   body{margin:0;background:#fff9ef;color:#222;font:18px system-ui,-apple-system,Segoe UI,sans-serif}
@@ -29,7 +29,7 @@
 </head>
 <body>
 <main>
-  <h1>Are You Coming?</h1>
+  <h1>വരുന്നുണ്ടോ???</h1>
   <div id="app"></div>
 </main>
 
@@ -66,7 +66,7 @@ function home(){
     <div class="box">
       <h2>Make a thing.</h2>
       <input id="title" placeholder="Evening walk">
-      <input id="when" placeholder="Today, 7 PM">
+      <input id="when" type="datetime-local">
       <button id="create">Create →</button>
     </div>
     <p class="muted">Make a link. Send it to people. That's it.</p>
@@ -74,8 +74,8 @@ function home(){
 
   document.querySelector("#create").onclick = async()=>{
     const title=document.querySelector("#title").value.trim();
-    const when=document.querySelector("#when").value.trim();
-    if(!title) return;
+    const when=document.querySelector("#when").value;
+    if(!title || !when) return;
     const eventId=id();
     await set(ref(db,"events/"+eventId),{
       title,when,responses:{}
@@ -102,7 +102,10 @@ function eventPage(eventId){
     root.innerHTML=`
       <div class="box">
         <h2>${esc(e.title)}</h2>
-        <p>${esc(e.when)}</p>
+        <p>${new Date(e.when).toLocaleString([],{
+          dateStyle:"medium",
+          timeStyle:"short"
+        })}</p>
 
         <div class="choice">
           <button class="yes" id="yes">YES</button>
@@ -110,17 +113,34 @@ function eventPage(eventId){
         </div>
 
         <input id="name" placeholder="Your name">
+        <input id="note" placeholder="Notes (optional)">
         <button id="save">Save answer</button>
       </div>
 
       <div class="box">
         <h3>Coming · ${yes.length}</h3>
-        ${yes.length ? yes.map(([name])=>`<div class="person"><span>${esc(name)}</span><b>✓</b></div>`).join("") : `<p class="muted">Nobody yet.</p>`}
+        ${yes.length ? yes.map(([name,person])=>`
+          <div class="person">
+            <div>
+              <strong>${esc(decodeURIComponent(name))}</strong>
+              ${person.note ? `<div class="muted">${esc(person.note)}</div>` : ""}
+            </div>
+            <b>✓</b>
+          </div>
+        `).join("") : `<p class="muted">Nobody yet.</p>`}
       </div>
 
       <div class="box">
         <h3>Not coming · ${no.length}</h3>
-        ${no.length ? no.map(([name])=>`<div class="person"><span>${esc(name)}</span><b>×</b></div>`).join("") : `<p class="muted">Nobody yet.</p>`}
+        ${no.length ? no.map(([name,person])=>`
+          <div class="person">
+            <div>
+              <strong>${esc(decodeURIComponent(name))}</strong>
+              ${person.note ? `<div class="muted">${esc(person.note)}</div>` : ""}
+            </div>
+            <b>×</b>
+          </div>
+        `).join("") : `<p class="muted">Nobody yet.</p>`}
       </div>
 
       <div class="box">
@@ -144,11 +164,17 @@ function eventPage(eventId){
 
     document.querySelector("#save").onclick=async()=>{
       const name=document.querySelector("#name").value.trim();
+      const note=document.querySelector("#note").value.trim();
+
       if(!name || !choice) return alert("Add your name and choose YES or NO.");
+
       await set(ref(db,`events/${eventId}/responses/${encodeURIComponent(name)}`),{
-        status:choice
+        status:choice,
+        note:note
       });
+
       document.querySelector("#name").value="";
+      document.querySelector("#note").value="";
       choice="";
     };
 
