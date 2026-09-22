@@ -1,0 +1,179 @@
+from pathlib import Path
+
+html = r'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Are You Coming?</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff9ef;color:#222;font:18px system-ui,-apple-system,Segoe UI,sans-serif}
+  main{max-width:620px;margin:0 auto;padding:32px 20px}
+  h1{font-size:42px;line-height:1;margin:0 0 28px}
+  h2{margin:0 0 8px;font-size:30px}
+  .box{background:white;border:3px solid #222;border-radius:20px;padding:22px;margin:18px 0;box-shadow:5px 5px 0 #222}
+  input,button{font:inherit}
+  input{width:100%;padding:14px 15px;border:2px solid #222;border-radius:12px;margin:7px 0 14px}
+  button{border:2px solid #222;border-radius:14px;padding:12px 18px;background:#ffcf4a;cursor:pointer;font-weight:800}
+  button:hover{transform:translateY(-1px)}
+  .yes{background:#8ee6a8}.no{background:#ff9b9b}
+  .choice{display:flex;gap:10px;margin:15px 0}
+  .choice button{flex:1}
+  .choice button.selected{outline:4px solid #222}
+  .person{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #ddd}
+  .person:last-child{border-bottom:0}
+  .muted{color:#777}
+  .link{word-break:break-all;background:#f1eee7;padding:10px;border-radius:10px;margin:12px 0}
+  .hidden{display:none}
+  .error{color:#b00020}
+</style>
+</head>
+<body>
+<main>
+  <h1>Are You Coming?</h1>
+  <div id="app"></div>
+</main>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import {getDatabase,ref,push,set,onValue} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC-SDx67qExccNG9dejrtT62J8XJFaMEfo",
+  authDomain: "are-you-coming-7d624.firebaseapp.com",
+  databaseURL: "https://are-you-coming-7d624-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "are-you-coming-7d624",
+  storageBucket: "are-you-coming-7d624.firebasestorage.app",
+  messagingSenderId: "871889087284",
+  appId: "1:871889087284:web:96de6b10f2e197ffc55361"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const root = document.querySelector("#app");
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+
+function id(){
+  return crypto.randomUUID().replaceAll("-","").slice(0,8);
+}
+
+function link(id){ return location.origin + location.pathname + "#e=" + id; }
+
+function home(){
+  root.innerHTML = `
+    <div class="box">
+      <h2>Make a thing.</h2>
+      <input id="title" placeholder="Evening walk">
+      <input id="when" placeholder="Today, 7 PM">
+      <button id="create">Create →</button>
+    </div>
+    <p class="muted">Make a link. Send it to people. That's it.</p>
+  `;
+
+  document.querySelector("#create").onclick = async()=>{
+    const title=document.querySelector("#title").value.trim();
+    const when=document.querySelector("#when").value.trim();
+    if(!title) return;
+    const eventId=id();
+    await set(ref(db,"events/"+eventId),{
+      title,when,responses:{}
+    });
+    location.hash="e="+eventId;
+  };
+}
+
+function eventPage(eventId){
+  root.innerHTML=`<p class="muted">Loading…</p>`;
+
+  onValue(ref(db,"events/"+eventId),snap=>{
+    const e=snap.val();
+    if(!e){
+      root.innerHTML=`<div class="box"><h2>Not found.</h2><p>That thing doesn't exist.</p></div>`;
+      return;
+    }
+
+    const responses=e.responses||{};
+    const people=Object.entries(responses);
+    const yes=people.filter(([,r])=>r.status==="yes");
+    const no=people.filter(([,r])=>r.status==="no");
+
+    root.innerHTML=`
+      <div class="box">
+        <h2>${esc(e.title)}</h2>
+        <p>${esc(e.when)}</p>
+
+        <div class="choice">
+          <button class="yes" id="yes">YES</button>
+          <button class="no" id="no">NO</button>
+        </div>
+
+        <input id="name" placeholder="Your name">
+        <button id="save">Save answer</button>
+      </div>
+
+      <div class="box">
+        <h3>Coming · ${yes.length}</h3>
+        ${yes.length ? yes.map(([name])=>`<div class="person"><span>${esc(name)}</span><b>✓</b></div>`).join("") : `<p class="muted">Nobody yet.</p>`}
+      </div>
+
+      <div class="box">
+        <h3>Not coming · ${no.length}</h3>
+        ${no.length ? no.map(([name])=>`<div class="person"><span>${esc(name)}</span><b>×</b></div>`).join("") : `<p class="muted">Nobody yet.</p>`}
+      </div>
+
+      <div class="box">
+        <b>Share this link</b>
+        <div class="link">${esc(link(eventId))}</div>
+        <button id="copy">Copy link</button>
+      </div>
+    `;
+
+    let choice="";
+    document.querySelector("#yes").onclick=()=>{
+      choice="yes";
+      document.querySelector("#yes").classList.add("selected");
+      document.querySelector("#no").classList.remove("selected");
+    };
+    document.querySelector("#no").onclick=()=>{
+      choice="no";
+      document.querySelector("#no").classList.add("selected");
+      document.querySelector("#yes").classList.remove("selected");
+    };
+
+    document.querySelector("#save").onclick=async()=>{
+      const name=document.querySelector("#name").value.trim();
+      if(!name || !choice) return alert("Add your name and choose YES or NO.");
+      await set(ref(db,`events/${eventId}/responses/${encodeURIComponent(name)}`),{
+        status:choice
+      });
+      document.querySelector("#name").value="";
+      choice="";
+    };
+
+    document.querySelector("#copy").onclick=async()=>{
+      await navigator.clipboard.writeText(link(eventId));
+      document.querySelector("#copy").textContent="Copied!";
+      setTimeout(()=>document.querySelector("#copy").textContent="Copy link",1200);
+    };
+  });
+}
+
+function route(){
+  const m=location.hash.match(/^#e=(.+)$/);
+  m ? eventPage(m[1]) : home();
+}
+
+addEventListener("hashchange",route);
+route();
+</script>
+</body>
+</html>
+'''
+
+path = Path("/mnt/data/are-you-coming-simple.html")
+path.write_text(html, encoding="utf-8")
+print(path)
