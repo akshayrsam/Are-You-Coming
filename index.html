@@ -6,25 +6,232 @@
 <title>വരുന്നുണ്ടോ???</title>
 <style>
   *{box-sizing:border-box}
-  body{margin:0;background:#fff9ef;color:#222;font:18px system-ui,-apple-system,Segoe UI,sans-serif}
-  main{max-width:620px;margin:0 auto;padding:32px 20px}
-  h1{font-size:42px;line-height:1;margin:0 0 28px}
-  h2{margin:0 0 8px;font-size:30px}
-  .box{background:white;border:3px solid #222;border-radius:20px;padding:22px;margin:18px 0;box-shadow:5px 5px 0 #222}
-  input,button{font:inherit}
-  input{width:100%;padding:14px 15px;border:2px solid #222;border-radius:12px;margin:7px 0 14px}
-  button{border:2px solid #222;border-radius:14px;padding:12px 18px;background:#ffcf4a;cursor:pointer;font-weight:800}
-  button:hover{transform:translateY(-1px)}
-  .yes{background:#8ee6a8}.no{background:#ff9b9b}
-  .choice{display:flex;gap:10px;margin:15px 0}
-  .choice button{flex:1}
-  .choice button.selected{outline:4px solid #222}
-  .person{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #ddd}
-  .person:last-child{border-bottom:0}
-  .muted{color:#777}
-  .link{word-break:break-all;background:#f1eee7;padding:10px;border-radius:10px;margin:12px 0}
-  .hidden{display:none}
-  .error{color:#b00020}
+
+  html{
+    -webkit-text-size-adjust:100%;
+  }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:#fff9ef;
+    color:#222;
+    font:18px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.45;
+  }
+
+  main{
+    width:min(100% - 32px,620px);
+    margin:0 auto;
+    padding:40px 0 56px;
+  }
+
+  h1{
+    font-size:clamp(36px,8vw,42px);
+    line-height:1;
+    text-align:center;
+    margin:0 0 32px;
+    word-break:keep-all;
+  }
+
+  h2{
+    margin:0 0 12px;
+    font-size:clamp(26px,6vw,30px);
+    line-height:1.15;
+  }
+
+  h3{
+    margin:0 0 10px;
+    font-size:22px;
+    line-height:1.2;
+  }
+
+  p{
+    margin:10px 0;
+  }
+
+  .box{
+    background:white;
+    border:3px solid #222;
+    border-radius:20px;
+    padding:22px;
+    margin:18px 0;
+    box-shadow:5px 5px 0 #222;
+    overflow:hidden;
+  }
+
+  input,button{
+    font:inherit;
+  }
+
+  input{
+    display:block;
+    width:100%;
+    min-height:52px;
+    padding:13px 15px;
+    border:2px solid #222;
+    border-radius:12px;
+    margin:8px 0 14px;
+    background:#fff;
+    color:#222;
+    outline:none;
+  }
+
+  input:focus{
+    box-shadow:0 0 0 3px rgba(34,34,34,.15);
+  }
+
+  input::placeholder{
+    color:#777;
+    opacity:1;
+  }
+
+  button{
+    min-height:50px;
+    border:2px solid #222;
+    border-radius:14px;
+    padding:12px 18px;
+    background:#ffcf4a;
+    color:#222;
+    cursor:pointer;
+    font-weight:800;
+    touch-action:manipulation;
+  }
+
+  button:hover{
+    transform:translateY(-1px);
+  }
+
+  button:active{
+    transform:translateY(0);
+  }
+
+  .yes{
+    background:#8ee6a8;
+  }
+
+  .no{
+    background:#ff9b9b;
+  }
+
+  .choice{
+    display:flex;
+    gap:10px;
+    margin:16px 0;
+  }
+
+  .choice button{
+    flex:1;
+    min-width:0;
+  }
+
+  .choice button.selected{
+    outline:4px solid #222;
+    outline-offset:1px;
+  }
+
+  .person{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    padding:12px 0;
+    border-bottom:1px solid #ddd;
+  }
+
+  .person:last-child{
+    border-bottom:0;
+  }
+
+  .person > div:first-child{
+    min-width:0;
+    overflow-wrap:anywhere;
+  }
+
+  .person b{
+    flex:0 0 auto;
+    font-size:22px;
+  }
+
+  .muted{
+    color:#777;
+  }
+
+  .link{
+    overflow-wrap:anywhere;
+    word-break:break-word;
+    background:#f1eee7;
+    padding:12px;
+    border-radius:10px;
+    margin:12px 0;
+    line-height:1.4;
+  }
+
+  .hidden{
+    display:none;
+  }
+
+  .error{
+    color:#b00020;
+  }
+
+  @media(max-width:480px){
+    body{
+      font-size:17px;
+    }
+
+    main{
+      width:min(100% - 20px,620px);
+      padding:24px 0 40px;
+    }
+
+    h1{
+      margin-bottom:24px;
+    }
+
+    .box{
+      padding:18px;
+      border-radius:18px;
+      margin:16px 0;
+      box-shadow:4px 4px 0 #222;
+    }
+
+    input{
+      min-height:50px;
+      padding:12px 13px;
+    }
+
+    button{
+      min-height:50px;
+      padding:11px 14px;
+    }
+
+    .choice{
+      gap:8px;
+    }
+
+    .person{
+      gap:12px;
+    }
+  }
+
+  @media(max-width:340px){
+    main{
+      width:min(100% - 16px,620px);
+    }
+
+    .box{
+      padding:15px;
+    }
+
+    .choice{
+      flex-direction:column;
+    }
+
+    .choice button{
+      width:100%;
+    }
+  }
 </style>
 </head>
 <body>
@@ -39,7 +246,7 @@ import {getDatabase,ref,set,onValue} from "https://www.gstatic.com/firebasejs/12
 import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC-SDx67qExccNG9dejrtT62J8XJFaMEfo",
+  apiKey: "AIzaSyC-SDx67qExccNG9dejrtT62JX8JFaMEfo",
   authDomain: "are-you-coming-7d624.firebaseapp.com",
   databaseURL: "https://are-you-coming-7d624-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "are-you-coming-7d624",
@@ -275,4 +482,3 @@ addEventListener("hashchange",route);
 </script>
 </body>
 </html>
-```
