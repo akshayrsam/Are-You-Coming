@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -39,7 +40,7 @@ import {getDatabase,ref,set,onValue} from "https://www.gstatic.com/firebasejs/12
 import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC-SDx67qExccNG9dejrtT62J8XJFaMEfo",
+  apiKey: "AIzaSyC-SDx67qExccNG9dejrtT62XJ8JFaMEfo",
   authDomain: "are-you-coming-7d624.firebaseapp.com",
   databaseURL: "https://are-you-coming-7d624-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "are-you-coming-7d624",
@@ -53,17 +54,23 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 const root = document.querySelector("#app");
 
-await signInAnonymously(auth);
+let authReady = false;
 
 const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
 }[c]));
 
 function id(){
   return crypto.randomUUID().replaceAll("-","").slice(0,8);
 }
 
-function link(id){ return location.origin + location.pathname + "#e=" + id; }
+function link(id){
+  return location.origin + location.pathname + "#e=" + id;
+}
 
 function home(){
   root.innerHTML = `
@@ -79,11 +86,17 @@ function home(){
   document.querySelector("#create").onclick = async()=>{
     const title=document.querySelector("#title").value.trim();
     const when=document.querySelector("#when").value;
+
     if(!title || !when) return;
+
     const eventId=id();
+
     await set(ref(db,"events/"+eventId),{
-      title,when,responses:{}
+      title,
+      when,
+      responses:{}
     });
+
     location.hash="e="+eventId;
   };
 }
@@ -93,8 +106,14 @@ function eventPage(eventId){
 
   onValue(ref(db,"events/"+eventId),snap=>{
     const e=snap.val();
+
     if(!e){
-      root.innerHTML=`<div class="box"><h2>Not found.</h2><p>That thing doesn't exist.</p></div>`;
+      root.innerHTML=`
+        <div class="box">
+          <h2>Not found.</h2>
+          <p>That thing doesn't exist.</p>
+        </div>
+      `;
       return;
     }
 
@@ -106,6 +125,7 @@ function eventPage(eventId){
     root.innerHTML=`
       <div class="box">
         <h2>${esc(e.title)}</h2>
+
         <p>${new Date(e.when).toLocaleString([],{
           dateStyle:"medium",
           timeStyle:"short"
@@ -123,43 +143,65 @@ function eventPage(eventId){
 
       <div class="box">
         <h3>Coming · ${yes.length}</h3>
-        ${yes.length ? yes.map(([name,person])=>`
-          <div class="person">
-            <div>
-              <strong>${esc(person.name)}</strong>
-              ${person.note ? `<div class="muted">${esc(person.note)}</div>` : ""}
-            </div>
-            <b>✓</b>
-          </div>
-        `).join("") : `<p class="muted">Nobody yet.</p>`}
+
+        ${
+          yes.length
+          ? yes.map(([uid,person])=>`
+              <div class="person">
+                <div>
+                  <strong>${esc(person.name || decodeURIComponent(uid))}</strong>
+                  ${
+                    person.note
+                    ? `<div class="muted">${esc(person.note)}</div>`
+                    : ""
+                  }
+                </div>
+                <b>✓</b>
+              </div>
+            `).join("")
+          : `<p class="muted">Nobody yet.</p>`
+        }
       </div>
 
       <div class="box">
         <h3>Not coming · ${no.length}</h3>
-        ${no.length ? no.map(([name,person])=>`
-          <div class="person">
-            <div>
-              <strong>${esc(person.name)}</strong>
-              ${person.note ? `<div class="muted">${esc(person.note)}</div>` : ""}
-            </div>
-            <b>×</b>
-          </div>
-        `).join("") : `<p class="muted">Nobody yet.</p>`}
+
+        ${
+          no.length
+          ? no.map(([uid,person])=>`
+              <div class="person">
+                <div>
+                  <strong>${esc(person.name || decodeURIComponent(uid))}</strong>
+                  ${
+                    person.note
+                    ? `<div class="muted">${esc(person.note)}</div>`
+                    : ""
+                  }
+                </div>
+                <b>×</b>
+              </div>
+            `).join("")
+          : `<p class="muted">Nobody yet.</p>`
+        }
       </div>
 
       <div class="box">
         <b>Share this link</b>
+
         <div class="link">${esc(link(eventId))}</div>
+
         <button id="copy">Copy link</button>
       </div>
     `;
 
     let choice="";
+
     document.querySelector("#yes").onclick=()=>{
       choice="yes";
       document.querySelector("#yes").classList.add("selected");
       document.querySelector("#no").classList.remove("selected");
     };
+
     document.querySelector("#no").onclick=()=>{
       choice="no";
       document.querySelector("#no").classList.add("selected");
@@ -170,34 +212,66 @@ function eventPage(eventId){
       const name=document.querySelector("#name").value.trim();
       const note=document.querySelector("#note").value.trim();
 
-      if(!name || !choice) return alert("Add your name and choose YES or NO.");
+      if(!name || !choice){
+        return alert("Add your name and choose YES or NO.");
+      }
 
-      await set(ref(db,`events/${eventId}/responses/${auth.currentUser.uid}`),{
-        name:name,
-        status:choice,
-        note:note
-      });
+      if(!authReady || !auth.currentUser){
+        return alert("Please wait a moment and try again.");
+      }
+
+      await set(
+        ref(db,`events/${eventId}/responses/${auth.currentUser.uid}`),
+        {
+          name:name,
+          status:choice,
+          note:note
+        }
+      );
 
       document.querySelector("#name").value="";
       document.querySelector("#note").value="";
       choice="";
+
+      document.querySelector("#yes").classList.remove("selected");
+      document.querySelector("#no").classList.remove("selected");
     };
 
     document.querySelector("#copy").onclick=async()=>{
       await navigator.clipboard.writeText(link(eventId));
+
       document.querySelector("#copy").textContent="Copied!";
-      setTimeout(()=>document.querySelector("#copy").textContent="Copy link",1200);
+
+      setTimeout(
+        ()=>document.querySelector("#copy").textContent="Copy link",
+        1200
+      );
     };
   });
 }
 
 function route(){
   const m=location.hash.match(/^#e=(.+)$/);
-  m ? eventPage(m[1]) : home();
+
+  if(m){
+    eventPage(m[1]);
+  }else{
+    home();
+  }
 }
 
-addEventListener("hashchange",route);
 route();
+
+signInAnonymously(auth)
+  .then(()=>{
+    authReady=true;
+  })
+  .catch(error=>{
+    console.error("Anonymous authentication failed:",error);
+  });
+
+addEventListener("hashchange",route);
 </script>
 </body>
 </html>
+```
