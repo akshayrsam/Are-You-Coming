@@ -242,7 +242,7 @@
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import {getDatabase,ref,set,onValue} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+import {getDatabase,ref,set,push,onValue} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
 import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -426,8 +426,8 @@ function eventPage(eventId){
         return alert("Please wait a moment and try again.");
       }
 
-      await set(
-        ref(db,`events/${eventId}/responses/${auth.currentUser.uid}`),
+     await push(
+        ref(db,`events/${eventId}/responses`),
         {
           name:name,
           status:choice,
