@@ -429,6 +429,7 @@ function eventPage(eventId){
      await push(
         ref(db,`events/${eventId}/responses`),
         {
+          uid: auth.currentUser.uid,
           name:name,
           status:choice,
           note:note
