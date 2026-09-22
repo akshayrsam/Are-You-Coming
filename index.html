@@ -264,9 +264,11 @@ route();
 signInAnonymously(auth)
   .then(()=>{
     authReady=true;
+    console.log("Anonymous login successful:", auth.currentUser.uid);
   })
   .catch(error=>{
-    console.error("Anonymous authentication failed:",error);
+    console.error("Anonymous authentication failed:", error.code, error.message);
+    alert("Firebase Auth error: " + error.code);
   });
 
 addEventListener("hashchange",route);
