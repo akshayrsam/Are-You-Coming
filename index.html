@@ -145,7 +145,7 @@ function home(){
     <p class="muted">Make a link. Send it to people. That's it.</p>
   `;
 
-  create.onclick=async()=>{
+  document.querySelector("#create").onclick=async()=>{
     const title=document.querySelector("#title").value.trim();
     const when=document.querySelector("#when").value;
 
@@ -181,17 +181,17 @@ function eventPage(eventId){
     }
 
     const people=Object.entries(event.responses||{});
-    const yes=people.filter(x=>x[1].status==="yes");
-    const no=people.filter(x=>x[1].status==="no");
+    const coming=people.filter(x=>x[1].status==="yes");
+    const notComing=people.filter(x=>x[1].status==="no");
 
     const list=people=>people.length
-      ?people.map(([,p])=>`
+      ?people.map(([,person])=>`
         <div class="person">
           <div>
-            <strong>${esc(p.name)}</strong>
-            ${p.note?`<div class="muted">${esc(p.note)}</div>`:""}
+            <strong>${esc(person.name)}</strong>
+            ${person.note?`<div class="muted">${esc(person.note)}</div>`:""}
           </div>
-          <b>${p.status==="yes"?"✓":"×"}</b>
+          <b>${person.status==="yes"?"✓":"×"}</b>
         </div>
       `).join("")
       :`<p class="muted">Nobody yet.</p>`;
@@ -199,6 +199,7 @@ function eventPage(eventId){
     root.innerHTML=`
       <div class="box">
         <h2>${esc(event.title)}</h2>
+
         <p>${new Date(event.when).toLocaleString([],{
           dateStyle:"medium",
           timeStyle:"short"
@@ -215,13 +216,13 @@ function eventPage(eventId){
       </div>
 
       <div class="box">
-        <h3>Coming · ${yes.length}</h3>
-        ${list(yes)}
+        <h3>Coming · ${coming.length}</h3>
+        ${list(coming)}
       </div>
 
       <div class="box">
-        <h3>Not coming · ${no.length}</h3>
-        ${list(no)}
+        <h3>Not coming · ${notComing.length}</h3>
+        ${list(notComing)}
       </div>
 
       <div class="box">
@@ -231,21 +232,26 @@ function eventPage(eventId){
       </div>
     `;
 
+    const yesButton=document.querySelector("#yes");
+    const noButton=document.querySelector("#no");
+    const saveButton=document.querySelector("#save");
+    const copyButton=document.querySelector("#copy");
+
     let choice="";
 
-    yes.onclick=()=>{
+    yesButton.onclick=()=>{
       choice="yes";
-      yes.classList.add("selected");
-      no.classList.remove("selected");
+      yesButton.classList.add("selected");
+      noButton.classList.remove("selected");
     };
 
-    no.onclick=()=>{
+    noButton.onclick=()=>{
       choice="no";
-      no.classList.add("selected");
-      yes.classList.remove("selected");
+      noButton.classList.add("selected");
+      yesButton.classList.remove("selected");
     };
 
-    save.onclick=async()=>{
+    saveButton.onclick=async()=>{
       const name=document.querySelector("#name").value.trim();
       const note=document.querySelector("#note").value.trim();
 
@@ -269,14 +275,15 @@ function eventPage(eventId){
       document.querySelector("#name").value="";
       document.querySelector("#note").value="";
       choice="";
-      yes.classList.remove("selected");
-      no.classList.remove("selected");
+
+      yesButton.classList.remove("selected");
+      noButton.classList.remove("selected");
     };
 
-    copy.onclick=async()=>{
+    copyButton.onclick=async()=>{
       await navigator.clipboard.writeText(url(eventId));
-      copy.textContent="Copied!";
-      setTimeout(()=>copy.textContent="Copy link",1200);
+      copyButton.textContent="Copied!";
+      setTimeout(()=>copyButton.textContent="Copy link",1200);
     };
   });
 }
