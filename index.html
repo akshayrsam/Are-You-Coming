@@ -6,97 +6,97 @@
 <title>വരുന്നുണ്ടോ???</title>
 
 <style>
-* { box-sizing: border-box }
+*{box-sizing:border-box}
 
-body {
-  margin: 0;
-  background: #fff9ef;
-  color: #222;
-  font: 18px system-ui, sans-serif;
-  line-height: 1.45;
+body{
+  margin:0;
+  background:#fff9ef;
+  color:#222;
+  font:18px system-ui,sans-serif;
+  line-height:1.45;
 }
 
-main {
-  width: min(calc(100% - 24px), 620px);
-  margin: auto;
-  padding: 35px 0 50px;
+main{
+  width:min(calc(100% - 24px),620px);
+  margin:auto;
+  padding:35px 0 50px;
 }
 
-h1 {
-  text-align: center;
-  font-size: clamp(36px, 8vw, 42px);
-  line-height: 1;
-  margin: 0 0 30px;
+h1{
+  text-align:center;
+  font-size:clamp(36px,8vw,42px);
+  line-height:1;
+  margin:0 0 30px;
 }
 
-h2, h3 { line-height: 1.15 }
-h2 { margin: 0 0 12px }
-h3 { margin: 0 0 8px }
+h2,h3{line-height:1.15}
+h2{margin:0 0 12px}
+h3{margin:0 0 8px}
 
-.box {
-  background: #fff;
-  border: 3px solid #222;
-  border-radius: 18px;
-  padding: 20px;
-  margin: 16px 0;
-  box-shadow: 5px 5px #222;
+.box{
+  background:#fff;
+  border:3px solid #222;
+  border-radius:18px;
+  padding:20px;
+  margin:16px 0;
+  box-shadow:5px 5px #222;
 }
 
-input, button { font: inherit }
+input,button{font:inherit}
 
-input {
-  display: block;
-  width: 100%;
-  min-height: 50px;
-  padding: 12px;
-  border: 2px solid #222;
-  border-radius: 11px;
-  margin: 8px 0 13px;
+input{
+  display:block;
+  width:100%;
+  min-height:50px;
+  padding:12px;
+  border:2px solid #222;
+  border-radius:11px;
+  margin:8px 0 13px;
 }
 
-button {
-  min-height: 50px;
-  border: 2px solid #222;
-  border-radius: 13px;
-  padding: 10px 16px;
-  background: #ffcf4a;
-  font-weight: 800;
-  cursor: pointer;
+button{
+  min-height:50px;
+  border:2px solid #222;
+  border-radius:13px;
+  padding:10px 16px;
+  background:#ffcf4a;
+  font-weight:800;
+  cursor:pointer;
 }
 
-.yes { background: #8ee6a8 }
-.no { background: #ff9b9b }
+.yes{background:#8ee6a8}
+.no{background:#ff9b9b}
 
-.choice {
-  display: flex;
-  gap: 9px;
-  margin: 15px 0;
+.choice{
+  display:flex;
+  gap:9px;
+  margin:15px 0;
 }
 
-.choice button { flex: 1 }
-.selected { outline: 4px solid #222 }
+.choice button{flex:1}
+.selected{outline:4px solid #222}
 
-.person {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 11px 0;
-  border-bottom: 1px solid #ddd;
+.person{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:11px 0;
+  border-bottom:1px solid #ddd;
 }
 
-.person:last-child { border: 0 }
-.muted { color: #777 }
+.person:last-child{border:0}
+.muted{color:#777}
 
-.link {
-  overflow-wrap: anywhere;
-  background: #f1eee7;
-  padding: 11px;
-  border-radius: 9px;
-  margin: 11px 0;
+.link{
+  overflow-wrap:anywhere;
+  background:#f1eee7;
+  padding:11px;
+  border-radius:9px;
+  margin:11px 0;
 }
 
-@media (max-width: 340px) {
-  .choice { flex-direction: column }
+@media(max-width:340px){
+  .choice{flex-direction:column}
 }
 </style>
 </head>
@@ -108,16 +108,12 @@ button {
 </main>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import {
-  getDatabase, ref, set, push, onValue
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
-import {
-  getAuth, signInAnonymously
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import{getDatabase,ref,set,push,onValue}from"https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+import{getAuth,signInAnonymously}from"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC-SDx67qExccNG9dejrtT62XJ8JFaMEfo",
+  apiKey: "AIzaSyC-SDx67qExccNG9dejrtT62J8XJFaMEfo",
   authDomain: "are-you-coming-7d624.firebaseapp.com",
   databaseURL: "https://are-you-coming-7d624-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "are-you-coming-7d624",
@@ -126,21 +122,20 @@ const firebaseConfig = {
   appId: "1:871889087284:web:96de6b10f2e197ffc55361"
 };
 
-const db = getDatabase(initializeApp(firebaseConfig));
-const auth = getAuth();
-const app = document.querySelector("#app");
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const auth=getAuth(app);
+const root=document.querySelector("#app");
 
-let ready = false;
-
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
-  ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c])
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])
 );
 
-const id = () => crypto.randomUUID().replaceAll("-", "").slice(0, 8);
-const url = id => location.origin + location.pathname + "#e=" + id;
+const id=()=>crypto.randomUUID().replaceAll("-","").slice(0,8);
+const url=id=>location.origin+location.pathname+"#e="+id;
 
-function home() {
-  app.innerHTML = `
+function home(){
+  root.innerHTML=`
     <div class="box">
       <h2>Make a thing.</h2>
       <input id="title" placeholder="Evening walk">
@@ -150,33 +145,33 @@ function home() {
     <p class="muted">Make a link. Send it to people. That's it.</p>
   `;
 
-  create.onclick = async () => {
-    const title = document.querySelector("#title").value.trim();
-    const when = document.querySelector("#when").value;
+  create.onclick=async()=>{
+    const title=document.querySelector("#title").value.trim();
+    const when=document.querySelector("#when").value;
 
-    if (!title || !when) return;
+    if(!title||!when)return;
 
-    const eventId = id();
+    const eventId=id();
 
-    await set(ref(db, "events/" + eventId), {
+    await set(ref(db,"events/"+eventId),{
       title,
       when,
-      createdAt: Date.now(),
-      responses: {}
+      createdAt:Date.now(),
+      responses:{}
     });
 
-    location.hash = "e=" + eventId;
+    location.hash="e="+eventId;
   };
 }
 
-function eventPage(eventId) {
-  app.innerHTML = `<p class="muted">Loading…</p>`;
+function eventPage(eventId){
+  root.innerHTML=`<p class="muted">Loading…</p>`;
 
-  onValue(ref(db, "events/" + eventId), snap => {
-    const event = snap.val();
+  onValue(ref(db,"events/"+eventId),snap=>{
+    const event=snap.val();
 
-    if (!event) {
-      app.innerHTML = `
+    if(!event){
+      root.innerHTML=`
         <div class="box">
           <h2>Not found.</h2>
           <p>That thing doesn't exist.</p>
@@ -185,28 +180,28 @@ function eventPage(eventId) {
       return;
     }
 
-    const people = Object.entries(event.responses || {});
-    const yes = people.filter(x => x[1].status === "yes");
-    const no = people.filter(x => x[1].status === "no");
+    const people=Object.entries(event.responses||{});
+    const yes=people.filter(x=>x[1].status==="yes");
+    const no=people.filter(x=>x[1].status==="no");
 
-    const list = people => people.length
-      ? people.map(([, p]) => `
-          <div class="person">
-            <div>
-              <strong>${esc(p.name)}</strong>
-              ${p.note ? `<div class="muted">${esc(p.note)}</div>` : ""}
-            </div>
-            <b>${p.status === "yes" ? "✓" : "×"}</b>
+    const list=people=>people.length
+      ?people.map(([,p])=>`
+        <div class="person">
+          <div>
+            <strong>${esc(p.name)}</strong>
+            ${p.note?`<div class="muted">${esc(p.note)}</div>`:""}
           </div>
-        `).join("")
-      : `<p class="muted">Nobody yet.</p>`;
+          <b>${p.status==="yes"?"✓":"×"}</b>
+        </div>
+      `).join("")
+      :`<p class="muted">Nobody yet.</p>`;
 
-    app.innerHTML = `
+    root.innerHTML=`
       <div class="box">
         <h2>${esc(event.title)}</h2>
-        <p>${new Date(event.when).toLocaleString([], {
-          dateStyle: "medium",
-          timeStyle: "short"
+        <p>${new Date(event.when).toLocaleString([],{
+          dateStyle:"medium",
+          timeStyle:"short"
         })}</p>
 
         <div class="choice">
@@ -236,64 +231,66 @@ function eventPage(eventId) {
       </div>
     `;
 
-    let choice = "";
+    let choice="";
 
-    yes.onclick = () => {
-      choice = "yes";
+    yes.onclick=()=>{
+      choice="yes";
       yes.classList.add("selected");
       no.classList.remove("selected");
     };
 
-    no.onclick = () => {
-      choice = "no";
+    no.onclick=()=>{
+      choice="no";
       no.classList.add("selected");
       yes.classList.remove("selected");
     };
 
-    save.onclick = async () => {
-      const name = document.querySelector("#name").value.trim();
-      const note = document.querySelector("#note").value.trim();
+    save.onclick=async()=>{
+      const name=document.querySelector("#name").value.trim();
+      const note=document.querySelector("#note").value.trim();
 
-      if (!name || !choice)
+      if(!name||!choice)
         return alert("Add your name and choose YES or NO.");
 
-      if (!ready || !auth.currentUser)
-        return alert("Please wait a moment and try again.");
-
-      await push(ref(db, `events/${eventId}/responses`), {
-        uid: auth.currentUser.uid,
+      const response={
         name,
-        status: choice,
+        status:choice,
         note
-      });
+      };
 
-      document.querySelector("#name").value = "";
-      document.querySelector("#note").value = "";
-      choice = "";
+      if(auth.currentUser)
+        response.uid=auth.currentUser.uid;
+
+      await push(
+        ref(db,`events/${eventId}/responses`),
+        response
+      );
+
+      document.querySelector("#name").value="";
+      document.querySelector("#note").value="";
+      choice="";
       yes.classList.remove("selected");
       no.classList.remove("selected");
     };
 
-    copy.onclick = async () => {
+    copy.onclick=async()=>{
       await navigator.clipboard.writeText(url(eventId));
-      copy.textContent = "Copied!";
-      setTimeout(() => copy.textContent = "Copy link", 1200);
+      copy.textContent="Copied!";
+      setTimeout(()=>copy.textContent="Copy link",1200);
     };
   });
 }
 
-function route() {
-  const match = location.hash.match(/^#e=(.+)$/);
-  match ? eventPage(match[1]) : home();
+function route(){
+  const match=location.hash.match(/^#e=(.+)$/);
+  match?eventPage(match[1]):home();
 }
 
 route();
 
-signInAnonymously(auth)
-  .then(() => ready = true)
-  .catch(error => alert("Firebase Auth error: " + error.code));
+signInAnonymously(auth).catch(()=>{});
 
-addEventListener("hashchange", route);
+addEventListener("hashchange",route);
 </script>
 </body>
 </html>
