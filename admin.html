@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · വരുന്നുണ്ടോ???</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:#fff9ef;
+  color:#222;
+  font:18px system-ui,sans-serif;
+  line-height:1.45;
+}
+
+main{
+  width:min(calc(100% - 24px),620px);
+  margin:auto;
+  padding:35px 0 50px;
+}
+
+h1{
+  text-align:center;
+  font-size:clamp(32px,8vw,42px);
+  line-height:1;
+  margin:0 0 30px;
+}
+
+h2,h3{line-height:1.15}
+h2{margin:0 0 8px}
+h3{margin:0 0 6px}
+
+.box{
+  background:#fff;
+  border:3px solid #222;
+  border-radius:18px;
+  padding:20px;
+  margin:16px 0;
+  box-shadow:5px 5px #222;
+}
+
+.form{
+  cursor:pointer;
+}
+
+.form:hover{
+  transform:translateY(-1px);
+}
+
+.muted{
+  color:#777;
+}
+
+.person{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:11px 0;
+  border-bottom:1px solid #ddd;
+}
+
+.person:last-child{
+  border:0;
+}
+
+.back{
+  background:#eee;
+  margin-bottom:16px;
+}
+
+@media(max-width:340px){
+  main{width:calc(100% - 16px)}
+}
+</style>
+</head>
+
+<body>
+<main>
+  <h1>വരുന്നുണ്ടോ???</h1>
+  <div id="app"></div>
+</main>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import{getDatabase,ref,onValue}from"https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC-SDx67qExccNG9dejrtT62J8XJFaMEfo",
+  authDomain: "are-you-coming-7d624.firebaseapp.com",
+  databaseURL: "https://are-you-coming-7d624-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "are-you-coming-7d624",
+  storageBucket: "are-you-coming-7d624.firebasestorage.app",
+  messagingSenderId: "871889087284",
+  appId: "1:871889087284:web:96de6b10f2e197ffc55361"
+};
+
+const ADMIN_SECRET="CHANGE-THIS-TO-A-LONG-RANDOM-SECRET";
+const db=getDatabase(initializeApp(firebaseConfig));
+const app=document.querySelector("#app");
+
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])
+);
+
+const date=value=>new Date(value).toLocaleString([],{
+  day:"2-digit",
+  month:"long",
+  year:"numeric",
+  hour:"2-digit",
+  minute:"2-digit",
+  second:"2-digit"
+});
+
+function allowed(){
+  return location.hash==="#"+ADMIN_SECRET;
+}
+
+function events(){
+  onValue(ref(db,"events"),snap=>{
+    const data=snap.val()||{};
+
+    const list=Object.entries(data).sort((a,b)=>
+      (a[1].createdAt||0)-(b[1].createdAt||0)
+    );
+
+    app.innerHTML=`
+      <div class="box">
+        <h2>All forms</h2>
+        <p class="muted">${list.length} ${list.length===1?"form":"forms"}</p>
+      </div>
+      ${list.map(([id,e],i)=>`
+        <div class="box form" data-id="${id}">
+          <h3>${String(i+1).padStart(2,"0")} · ${esc(e.title)}</h3>
+          <p class="muted">
+            Created ${e.createdAt?date(e.createdAt):"date unavailable"}<br>
+            Event ${new Date(e.when).toLocaleString([],{
+              dateStyle:"medium",timeStyle:"short"
+            })}
+          </p>
+          <b>${Object.keys(e.responses||{}).length} responses</b>
+        </div>
+      `).join("")}
+    `;
+
+    document.querySelectorAll(".form").forEach(x=>
+      x.onclick=()=>show(x.dataset.id,data[x.dataset.id])
+    );
+  });
+}
+
+function show(id,e){
+  const responses=Object.values(e.responses||{});
+  const yes=responses.filter(r=>r.status==="yes");
+  const no=responses.filter(r=>r.status==="no");
+
+  const list=a=>a.length?a.map(r=>`
+    <div class="person">
+      <div>
+        <strong>${esc(r.name)}</strong>
+        ${r.note?`<div class="muted">${esc(r.note)}</div>`:""}
+      </div>
+      <b>${r.status==="yes"?"✓":"×"}</b>
+    </div>
+  `).join(""):`<p class="muted">Nobody yet.</p>`;
+
+  app.innerHTML=`
+    <button class="back" id="back">← All forms</button>
+
+    <div class="box">
+      <h2>${esc(e.title)}</h2>
+      <p>${new Date(e.when).toLocaleString([],{
+        dateStyle:"medium",timeStyle:"short"
+      })}</p>
+      <p class="muted">
+        Created ${e.createdAt?date(e.createdAt):"date unavailable"}
+      </p>
+      <b>YES · ${yes.length} &nbsp; NO · ${no.length} &nbsp; TOTAL · ${responses.length}</b>
+    </div>
+
+    <div class="box">
+      <h3>Coming · ${yes.length}</h3>
+      ${list(yes)}
+    </div>
+
+    <div class="box">
+      <h3>Not coming · ${no.length}</h3>
+      ${list(no)}
+    </div>
+  `;
+
+  back.onclick=events;
+}
+
+if(allowed()) events();
+else app.innerHTML=`
+  <div class="box">
+    <h2>Not found.</h2>
+  </div>
+`;
+</script>
+</body>
+</html>
