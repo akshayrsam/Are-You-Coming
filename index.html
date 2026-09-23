@@ -4,236 +4,103 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>വരുന്നുണ്ടോ???</title>
+
 <style>
-  *{box-sizing:border-box}
+* { box-sizing: border-box }
 
-  html{
-    -webkit-text-size-adjust:100%;
-  }
+body {
+  margin: 0;
+  background: #fff9ef;
+  color: #222;
+  font: 18px system-ui, sans-serif;
+  line-height: 1.45;
+}
 
-  body{
-    margin:0;
-    min-height:100vh;
-    background:#fff9ef;
-    color:#222;
-    font:18px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    line-height:1.45;
-  }
+main {
+  width: min(calc(100% - 24px), 620px);
+  margin: auto;
+  padding: 35px 0 50px;
+}
 
-  main{
-    width:min(100% - 32px,620px);
-    margin:0 auto;
-    padding:40px 0 56px;
-  }
+h1 {
+  text-align: center;
+  font-size: clamp(36px, 8vw, 42px);
+  line-height: 1;
+  margin: 0 0 30px;
+}
 
-  h1{
-    font-size:clamp(36px,8vw,42px);
-    line-height:1;
-    text-align:center;
-    margin:0 0 32px;
-    word-break:keep-all;
-  }
+h2, h3 { line-height: 1.15 }
+h2 { margin: 0 0 12px }
+h3 { margin: 0 0 8px }
 
-  h2{
-    margin:0 0 12px;
-    font-size:clamp(26px,6vw,30px);
-    line-height:1.15;
-  }
+.box {
+  background: #fff;
+  border: 3px solid #222;
+  border-radius: 18px;
+  padding: 20px;
+  margin: 16px 0;
+  box-shadow: 5px 5px #222;
+}
 
-  h3{
-    margin:0 0 10px;
-    font-size:22px;
-    line-height:1.2;
-  }
+input, button { font: inherit }
 
-  p{
-    margin:10px 0;
-  }
+input {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  padding: 12px;
+  border: 2px solid #222;
+  border-radius: 11px;
+  margin: 8px 0 13px;
+}
 
-  .box{
-    background:white;
-    border:3px solid #222;
-    border-radius:20px;
-    padding:22px;
-    margin:18px 0;
-    box-shadow:5px 5px 0 #222;
-    overflow:hidden;
-  }
+button {
+  min-height: 50px;
+  border: 2px solid #222;
+  border-radius: 13px;
+  padding: 10px 16px;
+  background: #ffcf4a;
+  font-weight: 800;
+  cursor: pointer;
+}
 
-  input,button{
-    font:inherit;
-  }
+.yes { background: #8ee6a8 }
+.no { background: #ff9b9b }
 
-  input{
-    display:block;
-    width:100%;
-    min-height:52px;
-    padding:13px 15px;
-    border:2px solid #222;
-    border-radius:12px;
-    margin:8px 0 14px;
-    background:#fff;
-    color:#222;
-    outline:none;
-  }
+.choice {
+  display: flex;
+  gap: 9px;
+  margin: 15px 0;
+}
 
-  input:focus{
-    box-shadow:0 0 0 3px rgba(34,34,34,.15);
-  }
+.choice button { flex: 1 }
+.selected { outline: 4px solid #222 }
 
-  input::placeholder{
-    color:#777;
-    opacity:1;
-  }
+.person {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid #ddd;
+}
 
-  button{
-    min-height:50px;
-    border:2px solid #222;
-    border-radius:14px;
-    padding:12px 18px;
-    background:#ffcf4a;
-    color:#222;
-    cursor:pointer;
-    font-weight:800;
-    touch-action:manipulation;
-  }
+.person:last-child { border: 0 }
+.muted { color: #777 }
 
-  button:hover{
-    transform:translateY(-1px);
-  }
+.link {
+  overflow-wrap: anywhere;
+  background: #f1eee7;
+  padding: 11px;
+  border-radius: 9px;
+  margin: 11px 0;
+}
 
-  button:active{
-    transform:translateY(0);
-  }
-
-  .yes{
-    background:#8ee6a8;
-  }
-
-  .no{
-    background:#ff9b9b;
-  }
-
-  .choice{
-    display:flex;
-    gap:10px;
-    margin:16px 0;
-  }
-
-  .choice button{
-    flex:1;
-    min-width:0;
-  }
-
-  .choice button.selected{
-    outline:4px solid #222;
-    outline-offset:1px;
-  }
-
-  .person{
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:16px;
-    padding:12px 0;
-    border-bottom:1px solid #ddd;
-  }
-
-  .person:last-child{
-    border-bottom:0;
-  }
-
-  .person > div:first-child{
-    min-width:0;
-    overflow-wrap:anywhere;
-  }
-
-  .person b{
-    flex:0 0 auto;
-    font-size:22px;
-  }
-
-  .muted{
-    color:#777;
-  }
-
-  .link{
-    overflow-wrap:anywhere;
-    word-break:break-word;
-    background:#f1eee7;
-    padding:12px;
-    border-radius:10px;
-    margin:12px 0;
-    line-height:1.4;
-  }
-
-  .hidden{
-    display:none;
-  }
-
-  .error{
-    color:#b00020;
-  }
-
-  @media(max-width:480px){
-    body{
-      font-size:17px;
-    }
-
-    main{
-      width:min(100% - 20px,620px);
-      padding:24px 0 40px;
-    }
-
-    h1{
-      margin-bottom:24px;
-    }
-
-    .box{
-      padding:18px;
-      border-radius:18px;
-      margin:16px 0;
-      box-shadow:4px 4px 0 #222;
-    }
-
-    input{
-      min-height:50px;
-      padding:12px 13px;
-    }
-
-    button{
-      min-height:50px;
-      padding:11px 14px;
-    }
-
-    .choice{
-      gap:8px;
-    }
-
-    .person{
-      gap:12px;
-    }
-  }
-
-  @media(max-width:340px){
-    main{
-      width:min(100% - 16px,620px);
-    }
-
-    .box{
-      padding:15px;
-    }
-
-    .choice{
-      flex-direction:column;
-    }
-
-    .choice button{
-      width:100%;
-    }
-  }
+@media (max-width: 340px) {
+  .choice { flex-direction: column }
+}
 </style>
 </head>
+
 <body>
 <main>
   <h1>വരുന്നുണ്ടോ???</h1>
@@ -241,12 +108,16 @@
 </main>
 
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import {getDatabase,ref,set,push,onValue} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
-import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import {
+  getDatabase, ref, set, push, onValue
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+import {
+  getAuth, signInAnonymously
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC-SDx67qExccNG9dejrtT62J8XJFaMEfo",
+  apiKey: "AIzaSyC-SDx67qExccNG9dejrtT62XJ8JFaMEfo",
   authDomain: "are-you-coming-7d624.firebaseapp.com",
   databaseURL: "https://are-you-coming-7d624-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "are-you-coming-7d624",
@@ -254,32 +125,22 @@ const firebaseConfig = {
   messagingSenderId: "871889087284",
   appId: "1:871889087284:web:96de6b10f2e197ffc55361"
 };
- 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
-const root = document.querySelector("#app");
 
-let authReady = false;
+const db = getDatabase(initializeApp(firebaseConfig));
+const auth = getAuth();
+const app = document.querySelector("#app");
 
-const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#39;"
-}[c]));
+let ready = false;
 
-function id(){
-  return crypto.randomUUID().replaceAll("-","").slice(0,8);
-}
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
+  ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c])
+);
 
-function link(id){
-  return location.origin + location.pathname + "#e=" + id;
-}
+const id = () => crypto.randomUUID().replaceAll("-", "").slice(0, 8);
+const url = id => location.origin + location.pathname + "#e=" + id;
 
-function home(){
-  root.innerHTML = `
+function home() {
+  app.innerHTML = `
     <div class="box">
       <h2>Make a thing.</h2>
       <input id="title" placeholder="Evening walk">
@@ -289,32 +150,33 @@ function home(){
     <p class="muted">Make a link. Send it to people. That's it.</p>
   `;
 
-  document.querySelector("#create").onclick = async()=>{
-    const title=document.querySelector("#title").value.trim();
-    const when=document.querySelector("#when").value;
+  create.onclick = async () => {
+    const title = document.querySelector("#title").value.trim();
+    const when = document.querySelector("#when").value;
 
-    if(!title || !when) return;
+    if (!title || !when) return;
 
-    const eventId=id();
+    const eventId = id();
 
-    await set(ref(db,"events/"+eventId),{
+    await set(ref(db, "events/" + eventId), {
       title,
       when,
-      responses:{}
+      createdAt: Date.now(),
+      responses: {}
     });
 
-    location.hash="e="+eventId;
+    location.hash = "e=" + eventId;
   };
 }
 
-function eventPage(eventId){
-  root.innerHTML=`<p class="muted">Loading…</p>`;
+function eventPage(eventId) {
+  app.innerHTML = `<p class="muted">Loading…</p>`;
 
-  onValue(ref(db,"events/"+eventId),snap=>{
-    const e=snap.val();
+  onValue(ref(db, "events/" + eventId), snap => {
+    const event = snap.val();
 
-    if(!e){
-      root.innerHTML=`
+    if (!event) {
+      app.innerHTML = `
         <div class="box">
           <h2>Not found.</h2>
           <p>That thing doesn't exist.</p>
@@ -323,18 +185,28 @@ function eventPage(eventId){
       return;
     }
 
-    const responses=e.responses||{};
-    const people=Object.entries(responses);
-    const yes=people.filter(([,r])=>r.status==="yes");
-    const no=people.filter(([,r])=>r.status==="no");
+    const people = Object.entries(event.responses || {});
+    const yes = people.filter(x => x[1].status === "yes");
+    const no = people.filter(x => x[1].status === "no");
 
-    root.innerHTML=`
+    const list = people => people.length
+      ? people.map(([, p]) => `
+          <div class="person">
+            <div>
+              <strong>${esc(p.name)}</strong>
+              ${p.note ? `<div class="muted">${esc(p.note)}</div>` : ""}
+            </div>
+            <b>${p.status === "yes" ? "✓" : "×"}</b>
+          </div>
+        `).join("")
+      : `<p class="muted">Nobody yet.</p>`;
+
+    app.innerHTML = `
       <div class="box">
-        <h2>${esc(e.title)}</h2>
-
-        <p>${new Date(e.when).toLocaleString([],{
-          dateStyle:"medium",
-          timeStyle:"short"
+        <h2>${esc(event.title)}</h2>
+        <p>${new Date(event.when).toLocaleString([], {
+          dateStyle: "medium",
+          timeStyle: "short"
         })}</p>
 
         <div class="choice">
@@ -349,137 +221,79 @@ function eventPage(eventId){
 
       <div class="box">
         <h3>Coming · ${yes.length}</h3>
-
-        ${
-          yes.length
-          ? yes.map(([uid,person])=>`
-              <div class="person">
-                <div>
-                  <strong>${esc(person.name || decodeURIComponent(uid))}</strong>
-                  ${
-                    person.note
-                    ? `<div class="muted">${esc(person.note)}</div>`
-                    : ""
-                  }
-                </div>
-                <b>✓</b>
-              </div>
-            `).join("")
-          : `<p class="muted">Nobody yet.</p>`
-        }
+        ${list(yes)}
       </div>
 
       <div class="box">
         <h3>Not coming · ${no.length}</h3>
-
-        ${
-          no.length
-          ? no.map(([uid,person])=>`
-              <div class="person">
-                <div>
-                  <strong>${esc(person.name || decodeURIComponent(uid))}</strong>
-                  ${
-                    person.note
-                    ? `<div class="muted">${esc(person.note)}</div>`
-                    : ""
-                  }
-                </div>
-                <b>×</b>
-              </div>
-            `).join("")
-          : `<p class="muted">Nobody yet.</p>`
-        }
+        ${list(no)}
       </div>
 
       <div class="box">
         <b>Share this link</b>
-
-        <div class="link">${esc(link(eventId))}</div>
-
+        <div class="link">${esc(url(eventId))}</div>
         <button id="copy">Copy link</button>
       </div>
     `;
 
-    let choice="";
+    let choice = "";
 
-    document.querySelector("#yes").onclick=()=>{
-      choice="yes";
-      document.querySelector("#yes").classList.add("selected");
-      document.querySelector("#no").classList.remove("selected");
+    yes.onclick = () => {
+      choice = "yes";
+      yes.classList.add("selected");
+      no.classList.remove("selected");
     };
 
-    document.querySelector("#no").onclick=()=>{
-      choice="no";
-      document.querySelector("#no").classList.add("selected");
-      document.querySelector("#yes").classList.remove("selected");
+    no.onclick = () => {
+      choice = "no";
+      no.classList.add("selected");
+      yes.classList.remove("selected");
     };
 
-    document.querySelector("#save").onclick=async()=>{
-      const name=document.querySelector("#name").value.trim();
-      const note=document.querySelector("#note").value.trim();
+    save.onclick = async () => {
+      const name = document.querySelector("#name").value.trim();
+      const note = document.querySelector("#note").value.trim();
 
-      if(!name || !choice){
+      if (!name || !choice)
         return alert("Add your name and choose YES or NO.");
-      }
 
-      if(!authReady || !auth.currentUser){
+      if (!ready || !auth.currentUser)
         return alert("Please wait a moment and try again.");
-      }
 
-     await push(
-        ref(db,`events/${eventId}/responses`),
-        {
-          uid: auth.currentUser.uid,
-          name:name,
-          status:choice,
-          note:note
-        }
-      );
+      await push(ref(db, `events/${eventId}/responses`), {
+        uid: auth.currentUser.uid,
+        name,
+        status: choice,
+        note
+      });
 
-      document.querySelector("#name").value="";
-      document.querySelector("#note").value="";
-      choice="";
-
-      document.querySelector("#yes").classList.remove("selected");
-      document.querySelector("#no").classList.remove("selected");
+      document.querySelector("#name").value = "";
+      document.querySelector("#note").value = "";
+      choice = "";
+      yes.classList.remove("selected");
+      no.classList.remove("selected");
     };
 
-    document.querySelector("#copy").onclick=async()=>{
-      await navigator.clipboard.writeText(link(eventId));
-
-      document.querySelector("#copy").textContent="Copied!";
-
-      setTimeout(
-        ()=>document.querySelector("#copy").textContent="Copy link",
-        1200
-      );
+    copy.onclick = async () => {
+      await navigator.clipboard.writeText(url(eventId));
+      copy.textContent = "Copied!";
+      setTimeout(() => copy.textContent = "Copy link", 1200);
     };
   });
 }
 
-function route(){
-  const m=location.hash.match(/^#e=(.+)$/);
-
-  if(m){
-    eventPage(m[1]);
-  }else{
-    home();
-  }
+function route() {
+  const match = location.hash.match(/^#e=(.+)$/);
+  match ? eventPage(match[1]) : home();
 }
 
 route();
 
 signInAnonymously(auth)
-  .then(()=>{
-    authReady=true;
-    console.log("Anonymous login successful:", auth.currentUser.uid);
-  })
-  .catch(error=>{
-    console.error("Anonymous authentication failed:", error.code, error.message);
-    alert("Firebase Auth error: " + error.code);
-  });
+  .then(() => ready = true)
+  .catch(error => alert("Firebase Auth error: " + error.code));
 
-addEventListener("hashchange",route);
+addEventListener("hashchange", route);
 </script>
 </body>
 </html>
